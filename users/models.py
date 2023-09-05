@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 # Create your models here.
 class CustomUserManager(BaseUserManager):
     def _create_user(self, username, email, password = None, **extra_fields):
-        email = self
+        email = self.normalize_email(email)
         user = self.model(username = username, email = email, **extra_fields)
         user.set_password(password)
         user.save()
