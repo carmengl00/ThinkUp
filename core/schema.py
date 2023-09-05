@@ -34,5 +34,6 @@ class Mutation:
     token_auth = mutations.ObtainJSONWebToken.field
     verify_token = mutations.VerifyToken.field
 
+    password_change = mutations.PasswordChange.field
 
 schema = JwtSchema(query=Query, mutation=Mutation)
