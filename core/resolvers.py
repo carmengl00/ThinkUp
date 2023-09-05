@@ -19,3 +19,10 @@ def create_idea(text: str, visibility: str, info: Info) -> Idea:
     user = get_user(info)
     idea = Idea.objects.create(text = text, visibility = visibility, user = user)
     return idea
+
+def update_visibility_idea(id: int, visibility: str, info: Info) -> Idea:
+    user = get_user(info)
+    idea = Idea.objects.get(id = id, user = user)
+    idea.visibility = visibility
+    idea.save()
+    return idea

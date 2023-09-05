@@ -38,5 +38,6 @@ class Mutation:
     send_password_reset_email = mutations.SendPasswordResetEmail.field
 
     create_idea: Idea = strawberry.mutation(create_idea)
+    update_visibility_idea: Idea = strawberry.mutation(update_visibility_idea)
 
 schema = JwtSchema(query=Query, mutation=Mutation)
