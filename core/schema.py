@@ -35,5 +35,6 @@ class Mutation:
     verify_token = mutations.VerifyToken.field
 
     password_change = mutations.PasswordChange.field
+    send_password_reset_email = mutations.SendPasswordResetEmail.field
 
 schema = JwtSchema(query=Query, mutation=Mutation)
