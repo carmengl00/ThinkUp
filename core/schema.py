@@ -1,6 +1,7 @@
 from typing import List
 import strawberry
 from .resolvers import *
+from gqlauth.user import arg_mutations as mutations
 
 @strawberry.type
 class Idea:
@@ -27,5 +28,9 @@ class Query:
 @strawberry.type
 class Mutation:
     register_user: CustomUser = strawberry.mutation(register_user)
+    
+    token_auth = mutations.ObtainJSONWebToken.field
+    verify_token = mutations.VerifyToken.field
+
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
