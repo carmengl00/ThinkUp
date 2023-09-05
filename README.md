@@ -2,11 +2,11 @@
 
 ## Getting Started
 
-To get a local copy up and running follow these steps:
+To get a working local copy and running, follow these steps.
 
 ### Prerequisites
 
-Before working with the project, you need to have installed the following tools:
+Before working with the project, you need to have installed the following tools.
 
 ```sh
 # Install python. Version used for development: Python 3.11.4
@@ -33,9 +33,9 @@ Install requirements in the virtual environment too.
 pip install -r requirements.txt
 ```
 
-4. Create database
+3. Create database
 
-Open terminal with command
+Open terminal run the following command.
 ```sh
 psql -U postgres
 ```
@@ -46,7 +46,7 @@ CREATE USER think_admin WITH PASSWORD 'th1nk_adm1n'; #Create user
 CREATE DATABASE thinkup WITH OWNER think_admin; #Create database with the created user
 ```
 
-Migrations
+Migrations.
 ```sh
 python manage.py makemigrations
 python manage.py migrate
