@@ -1,3 +1,4 @@
+from typing import List
 from users.models import CustomUser
 from django.contrib.auth import get_user_model
 from gqlauth.models import UserStatus
@@ -26,3 +27,7 @@ def update_visibility_idea(id: int, visibility: str, info: Info) -> Idea:
     idea.visibility = visibility
     idea.save()
     return idea
+
+def my_ideas(info: Info) -> List[Idea]:
+    user = get_user(info)
+    return Idea.objects.filter(user = user)
