@@ -40,3 +40,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+    
+class RequestStatus(models.TextChoices):
+    PENDING = 'pending'
+    APPROVED = 'approved'
+    REJECTED = 'rejected'
+
+class FollowRequestManager(models.Manager):
+    def create_request(self, requester, required):
+        if requester == required:
+            raise ValueError('You cannot follow yourself')
+        if self.filter(requester = requester, required = required).exists():
+            raise ValueError('You already sent a request to this user')
+        request = self.model(requester = requester, required = required)
+        request.save()
+        return request
+
+class FollowRequest(models.Model):
+    requester = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_sent')
+    required = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_received')
+    status = models.CharField(max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING)
+
+    objects = FollowRequestManager()

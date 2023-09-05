@@ -22,6 +22,13 @@ class CustomUser:
     password: str
 
 @strawberry.type
+class FollowRequest:
+    id: strawberry.ID
+    requester: CustomUser
+    required: CustomUser
+    status: str
+
+@strawberry.type
 class Query(UserQueries):
     @strawberry.field
     def users(self) -> List[CustomUser]:
@@ -41,5 +48,7 @@ class Mutation:
     update_visibility_idea: Idea = strawberry.mutation(update_visibility_idea)
     my_ideas: List[Idea] = strawberry.mutation(my_ideas)
     delete_idea: bool = strawberry.mutation(delete_idea)
+
+    follow_request: FollowRequest = strawberry.mutation(follow_request)
 
 schema = JwtSchema(query=Query, mutation=Mutation)
