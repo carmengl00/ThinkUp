@@ -61,11 +61,19 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'gqlauth.core.middlewares.django_jwt_middleware',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 GQL_AUTH = GqlAuthSettings(
     LOGIN_REQUIRE_CAPTCHA = False,
     REGISTER_REQUIRE_CAPTCHA = False,
+    ALLOW_LOGIN_NOT_VERIFIED=True,
 )
 
 ROOT_URLCONF = "core.urls"
