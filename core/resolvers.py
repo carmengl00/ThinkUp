@@ -31,3 +31,9 @@ def update_visibility_idea(id: int, visibility: str, info: Info) -> Idea:
 def my_ideas(info: Info) -> List[Idea]:
     user = get_user(info)
     return Idea.objects.filter(user = user)
+
+def delete_idea(id: int, info: Info) -> bool:
+    user = get_user(info)
+    idea = Idea.objects.get(id = id, user = user)
+    idea.delete()
+    return True

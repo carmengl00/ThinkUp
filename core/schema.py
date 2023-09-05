@@ -40,5 +40,6 @@ class Mutation:
     create_idea: Idea = strawberry.mutation(create_idea)
     update_visibility_idea: Idea = strawberry.mutation(update_visibility_idea)
     my_ideas: List[Idea] = strawberry.mutation(my_ideas)
+    delete_idea: bool = strawberry.mutation(delete_idea)
 
 schema = JwtSchema(query=Query, mutation=Mutation)
