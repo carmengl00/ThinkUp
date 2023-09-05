@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-To get a working local copy and running, follow these steps.
+To get a working local copy, follow these steps.
 
 ### Prerequisites
 
@@ -24,10 +24,7 @@ git clone https://github.com/carmengl00/ThinkUp.git
 
 2. Install requirements
 
-```sh
-pip install -r requirements.txt
-```
-Install requirements in the virtual environment too.
+Install requirements in the virtual environment.
 ```sh
 .\venv\Scripts\activate
 pip install -r requirements.txt
