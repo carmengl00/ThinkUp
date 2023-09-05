@@ -1,5 +1,5 @@
 from typing import List
-from users.models import CustomUser
+from users.models import CustomUser, FollowRequest
 from django.contrib.auth import get_user_model
 from gqlauth.models import UserStatus
 from ideas.models import Idea
@@ -37,3 +37,8 @@ def delete_idea(id: int, info: Info) -> bool:
     idea = Idea.objects.get(id = id, user = user)
     idea.delete()
     return True
+
+def follow_request(required_username: str, info: Info) -> FollowRequest:
+    requester = get_user(info)
+    required = get_user_model().objects.get(username = required_username)
+    return FollowRequest.objects.create_request(requester = requester, required = required)
