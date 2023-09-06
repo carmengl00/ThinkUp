@@ -34,6 +34,12 @@ class Follows:
     followed: CustomUser
 
 @strawberry.type
+class Notifications:
+    id: strawberry.ID
+    idea: Idea
+    user: CustomUser
+
+@strawberry.type
 class Query(UserQueries):
     @strawberry.field
     def users(self) -> List[CustomUser]:
@@ -48,6 +54,8 @@ class Query(UserQueries):
     
     ideas_user: List[Idea] = strawberry.field(ideas_user)
     timeline: List[Idea] = strawberry.field(timeline)
+
+    my_notifications: List[Notifications] = strawberry.field(my_notifications)
     
 
 @strawberry.type
