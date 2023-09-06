@@ -96,7 +96,6 @@ def delete_follower(username: str, info: Info) -> bool:
         raise ValueError('This user is not following you')
     return True
 
-# A user can search other user by username or part of it
 def search_user(username: str, info: Info) -> List[CustomUser]:
     user = get_user(info)
     return get_user_model().objects.filter(username__icontains = username).exclude(username = user.username)
