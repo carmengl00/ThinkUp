@@ -65,3 +65,13 @@ def reject_follow_request(id: int, info: Info) -> bool:
     request.status = 'rejected'
     request.save()
     return True
+
+def my_followers(info: Info) -> List[CustomUser]:
+    user = get_user(info)
+    followers = Follows.objects.filter(followed = user)
+    return [f.follower for f in followers]
+    
+def my_followed(info: Info) -> List[CustomUser]:
+    user = get_user(info)
+    following = Follows.objects.filter(follower = user)
+    return [f.followed for f in following]
