@@ -62,3 +62,9 @@ class FollowRequest(models.Model):
     status = models.CharField(max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING)
 
     objects = FollowRequestManager()
+
+class Follows(models.Model):
+    follower = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follower')
+    followed = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='followed')
+
+    objects = models.Manager()
