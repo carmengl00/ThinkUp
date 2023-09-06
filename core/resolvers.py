@@ -2,7 +2,7 @@ from typing import List
 from users.models import CustomUser, FollowRequest, Follows
 from django.contrib.auth import get_user_model
 from gqlauth.models import UserStatus
-from ideas.models import Idea
+from ideas.models import Idea, Notification
 from gqlauth.core.utils import get_user
 from strawberry.types import Info
 
@@ -19,6 +19,10 @@ def register_user(username: str, email: str, password: str) -> CustomUser:
 def create_idea(text: str, visibility: str, info: Info) -> Idea:
     user = get_user(info)
     idea = Idea.objects.create(text = text, visibility = visibility, user = user)
+    followers = Follows.objects.filter(followed = user)
+    for f in followers:
+        if idea.visibility == 'public' or idea.visibility == 'protected':
+            Notification.objects.create(idea = idea, user = f.follower)
     return idea
 
 def update_visibility_idea(id: int, visibility: str, info: Info) -> Idea:
@@ -126,3 +130,7 @@ def timeline(info: Info):
 
     sorted_list = sorted(lista, key = lambda x: x.created_at, reverse = True)
     return sorted_list
+
+def my_notifications(info: Info) -> List[Notification]:
+    user = get_user(info)
+    return Notification.objects.filter(user = user)
