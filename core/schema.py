@@ -39,6 +39,9 @@ class Query(UserQueries):
     def users(self) -> List[CustomUser]:
         return get_user_model().objects.all()
     
+    my_ideas: List[Idea] = strawberry.field(my_ideas)
+    
+    my_follow_request: List[FollowRequest] = strawberry.field(my_follow_request)
     my_followers: List[CustomUser] = strawberry.field(my_followers)
     my_followed: List[CustomUser] = strawberry.field(my_followed)
 
@@ -54,11 +57,9 @@ class Mutation:
 
     create_idea: Idea = strawberry.mutation(create_idea)
     update_visibility_idea: Idea = strawberry.mutation(update_visibility_idea)
-    my_ideas: List[Idea] = strawberry.mutation(my_ideas)
     delete_idea: bool = strawberry.mutation(delete_idea)
 
     follow_request: FollowRequest = strawberry.mutation(follow_request)
-    my_follow_request: List[FollowRequest] = strawberry.mutation(my_follow_request)
     approve_follow_request: Follows = strawberry.mutation(approve_follow_request)
     reject_follow_request: bool = strawberry.mutation(reject_follow_request)
 
