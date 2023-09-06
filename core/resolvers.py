@@ -76,7 +76,7 @@ def my_followed(info: Info) -> List[CustomUser]:
     following = Follows.objects.filter(follower = user)
     return [f.followed for f in following]
 
-def stop_follow(username: str, info: Info) -> bool:
+def unfollow(username: str, info: Info) -> bool:
     user = get_user(info)
     followed = get_user_model().objects.get(username = username)
     follow = Follows.objects.filter(follower = user, followed = followed)

@@ -62,6 +62,6 @@ class Mutation:
     follow_request: FollowRequest = strawberry.mutation(follow_request)
     approve_follow_request: Follows = strawberry.mutation(approve_follow_request)
     reject_follow_request: bool = strawberry.mutation(reject_follow_request)
-    stop_follow: bool = strawberry.mutation(stop_follow)
+    unfollow: bool = strawberry.mutation(unfollow)
 
 schema = JwtSchema(query=Query, mutation=Mutation)
