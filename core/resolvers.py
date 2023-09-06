@@ -34,7 +34,8 @@ def update_visibility_idea(id: int, visibility: str, info: Info) -> Idea:
 
 def my_ideas(info: Info) -> List[Idea]:
     user = get_user(info)
-    return Idea.objects.filter(user = user)
+    sorted_list = sorted(Idea.objects.filter(user = user), key = lambda x: x.created_at, reverse = True)
+    return sorted_list
 
 def delete_idea(id: int, info: Info) -> bool:
     user = get_user(info)
