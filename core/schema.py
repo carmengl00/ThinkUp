@@ -29,6 +29,11 @@ class FollowRequest:
     status: str
 
 @strawberry.type
+class Follows:
+    follower: CustomUser
+    followed: CustomUser
+
+@strawberry.type
 class Query(UserQueries):
     @strawberry.field
     def users(self) -> List[CustomUser]:
@@ -50,5 +55,8 @@ class Mutation:
     delete_idea: bool = strawberry.mutation(delete_idea)
 
     follow_request: FollowRequest = strawberry.mutation(follow_request)
+    my_follow_request: List[FollowRequest] = strawberry.mutation(my_follow_request)
+    approve_follow_request: Follows = strawberry.mutation(approve_follow_request)
+    reject_follow_request: bool = strawberry.mutation(reject_follow_request)
 
 schema = JwtSchema(query=Query, mutation=Mutation)
