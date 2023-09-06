@@ -21,8 +21,13 @@ pip install virtualenv
 ```sh
 git clone https://github.com/carmengl00/ThinkUp.git
 ```
+2. Create virtual environment
 
-2. Install requirements
+```sh
+python -m venv venv
+```
+
+3. Install requirements
 
 Install requirements in the virtual environment.
 ```sh
@@ -30,7 +35,7 @@ Install requirements in the virtual environment.
 pip install -r requirements.txt
 ```
 
-3. Create database
+4. Create database
 
 Open terminal run the following command.
 ```sh
@@ -51,7 +56,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-4. Run
+5. Run
 
 ```sh
 python manage.py runserver
