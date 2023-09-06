@@ -47,6 +47,7 @@ class Query(UserQueries):
     search_user: List[CustomUser] = strawberry.field(search_user)
     
     ideas_user: List[Idea] = strawberry.field(ideas_user)
+    timeline: List[Idea] = strawberry.field(timeline)
     
 
 @strawberry.type
