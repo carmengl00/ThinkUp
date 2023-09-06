@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from gqlauth.settings_type import GqlAuthSettings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,12 +38,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "strawberry.django",
+    "gqlauth",
     # Third party apps
     "ideas",
     "users",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
+
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ARGUMENT": True,
+    "JWT_AUTH_HEADER_NAME": "Authorization",
+    "JWT_ALGORITHM": "HS256",
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -52,7 +61,20 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'gqlauth.core.middlewares.django_jwt_middleware',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+GQL_AUTH = GqlAuthSettings(
+    LOGIN_REQUIRE_CAPTCHA = False,
+    REGISTER_REQUIRE_CAPTCHA = False,
+    ALLOW_LOGIN_NOT_VERIFIED=True,
+)
 
 ROOT_URLCONF = "core.urls"
 

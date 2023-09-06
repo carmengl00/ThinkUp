@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 # Create your models here.
 class CustomUserManager(BaseUserManager):
     def _create_user(self, username, email, password = None, **extra_fields):
-        email = self
+        email = self.normalize_email(email)
         user = self.model(username = username, email = email, **extra_fields)
         user.set_password(password)
         user.save()
@@ -40,3 +40,27 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+class FollowRequestManager(models.Manager):
+    def create_request(self, requester, required):
+        if requester == required:
+            raise ValueError('You cannot follow yourself')
+        if self.filter(requester = requester, required = required).exists():
+            raise ValueError('You already sent a request to this user')
+        if Follows.objects.filter(follower = requester, followed = required).exists():
+            raise ValueError('You already follow this user')
+        request = self.model(requester = requester, required = required)
+        request.save()
+        return request
+
+class FollowRequest(models.Model):
+    requester = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_sent')
+    required = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_received')
+
+    objects = FollowRequestManager()
+
+class Follows(models.Model):
+    follower = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follower')
+    followed = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='followed')
+
+    objects = models.Manager()

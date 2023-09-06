@@ -17,3 +17,7 @@ class Idea(models.Model):
 
     def __str__(self):
         return self.text
+    
+class Notification(models.Model):
+    idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
