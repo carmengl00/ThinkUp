@@ -45,6 +45,9 @@ class Query(UserQueries):
     my_followers: List[CustomUser] = strawberry.field(my_followers)
     my_followed: List[CustomUser] = strawberry.field(my_followed)
     search_user: List[CustomUser] = strawberry.field(search_user)
+    
+    ideas_user: List[Idea] = strawberry.field(ideas_user)
+    
 
 @strawberry.type
 class Mutation:
@@ -65,5 +68,6 @@ class Mutation:
     reject_follow_request: bool = strawberry.mutation(reject_follow_request)
     unfollow: bool = strawberry.mutation(unfollow)
     delete_follower: bool = strawberry.mutation(delete_follower)
+    
 
 schema = JwtSchema(query=Query, mutation=Mutation)

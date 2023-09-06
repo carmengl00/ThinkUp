@@ -100,3 +100,20 @@ def search_user(username: str, info: Info) -> List[CustomUser]:
     user = get_user(info)
     return get_user_model().objects.filter(username__icontains = username).exclude(username = user.username)
     
+    
+def ideas_user(username: str, info: Info) -> List[Idea]:
+    user = get_user(info)
+    followed = get_user_model().objects.get(username = username)
+    follow = Follows.objects.filter(follower = user, followed = followed)
+    protected_ideas = []
+    private_ideas = []
+    if follow:
+        protected_ideas = Idea.objects.filter(user = followed, visibility = 'protected')
+    
+    if followed == user:
+        private_ideas = Idea.objects.filter(user = followed, visibility = 'private')
+        protected_ideas = Idea.objects.filter(user = followed, visibility = 'protected')
+        
+    public_ideas = Idea.objects.filter(user = followed, visibility = 'public')
+    lista = list(public_ideas) + list(protected_ideas) + list(private_ideas)
+    return lista
