@@ -51,3 +51,10 @@ def my_follow_request(info: Info) -> List[FollowRequest]:
     lista = list(im_requester) + list(im_required)
     
     return lista
+
+def approve_follow_request(id: int, info: Info) -> Follows:
+    user = get_user(info)
+    request = FollowRequest.objects.get(id = id, required = user)
+    request.status = 'approved'
+    request.save()
+    return Follows.objects.create(follower = request.requester, followed = request.required)

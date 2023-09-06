@@ -56,5 +56,6 @@ class Mutation:
 
     follow_request: FollowRequest = strawberry.mutation(follow_request)
     my_follow_request: List[FollowRequest] = strawberry.mutation(my_follow_request)
+    approve_follow_request: Follows = strawberry.mutation(approve_follow_request)
 
 schema = JwtSchema(query=Query, mutation=Mutation)
