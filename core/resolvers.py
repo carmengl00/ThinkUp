@@ -58,3 +58,10 @@ def approve_follow_request(id: int, info: Info) -> Follows:
     request.status = 'approved'
     request.save()
     return Follows.objects.create(follower = request.requester, followed = request.required)
+
+def reject_follow_request(id: int, info: Info) -> bool:
+    user = get_user(info)
+    request = FollowRequest.objects.get(id = id, required = user)
+    request.status = 'rejected'
+    request.save()
+    return True
