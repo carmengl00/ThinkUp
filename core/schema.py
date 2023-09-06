@@ -38,6 +38,9 @@ class Query(UserQueries):
     @strawberry.field
     def users(self) -> List[CustomUser]:
         return get_user_model().objects.all()
+    
+    my_followers: List[CustomUser] = strawberry.field(my_followers)
+    my_followed: List[CustomUser] = strawberry.field(my_followed)
 
 @strawberry.type
 class Mutation:
