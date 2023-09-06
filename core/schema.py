@@ -44,6 +44,7 @@ class Query(UserQueries):
     my_follow_request: List[FollowRequest] = strawberry.field(my_follow_request)
     my_followers: List[CustomUser] = strawberry.field(my_followers)
     my_followed: List[CustomUser] = strawberry.field(my_followed)
+    search_user: List[CustomUser] = strawberry.field(search_user)
 
 @strawberry.type
 class Mutation:
