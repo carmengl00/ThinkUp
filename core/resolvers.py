@@ -115,3 +115,14 @@ def ideas_user(username: str, info: Info) -> List[Idea]:
     public_ideas = Idea.objects.filter(user = followed, visibility = 'public')
     lista = list(public_ideas) + list(protected_ideas) + list(private_ideas)
     return lista
+
+def timeline(info: Info):
+    user = get_user(info)
+    following = Follows.objects.filter(follower = user)
+    my_ideas = Idea.objects.filter(user = user)
+    lista = list(my_ideas)
+    for f in following:
+        lista += ideas_user(f.followed.username, info)
+
+    sorted_list = sorted(lista, key = lambda x: x.created_at, reverse = True)
+    return sorted_list
