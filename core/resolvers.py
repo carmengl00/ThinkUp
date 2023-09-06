@@ -55,15 +55,13 @@ def my_follow_request(info: Info) -> List[FollowRequest]:
 def approve_follow_request(id: int, info: Info) -> Follows:
     user = get_user(info)
     request = FollowRequest.objects.get(id = id, required = user)
-    request.status = 'approved'
-    request.save()
+    request.delete()
     return Follows.objects.create(follower = request.requester, followed = request.required)
 
 def reject_follow_request(id: int, info: Info) -> bool:
     user = get_user(info)
     request = FollowRequest.objects.get(id = id, required = user)
-    request.status = 'rejected'
-    request.save()
+    request.delete()
     return True
 
 def my_followers(info: Info) -> List[CustomUser]:
