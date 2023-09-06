@@ -75,3 +75,13 @@ def my_followed(info: Info) -> List[CustomUser]:
     user = get_user(info)
     following = Follows.objects.filter(follower = user)
     return [f.followed for f in following]
+
+def stop_follow(username: str, info: Info) -> bool:
+    user = get_user(info)
+    followed = get_user_model().objects.get(username = username)
+    follow = Follows.objects.filter(follower = user, followed = followed)
+    if follow.exists():
+        follow.delete()
+    else:
+        raise ValueError('You are not following this user')
+    return True
