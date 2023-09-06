@@ -85,3 +85,13 @@ def unfollow(username: str, info: Info) -> bool:
     else:
         raise ValueError('You are not following this user')
     return True
+
+def delete_follower(username: str, info: Info) -> bool:
+    user = get_user(info)
+    follower = get_user_model().objects.get(username = username)
+    follow = Follows.objects.filter(follower = follower, followed = user)
+    if follow.exists():
+        follow.delete()
+    else:
+        raise ValueError('This user is not following you')
+    return True
