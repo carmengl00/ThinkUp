@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-To get a working local copy, follow these steps.
+To get a working local copy on Windows, follow these steps.
 
 ### Prerequisites
 
@@ -61,3 +61,57 @@ python manage.py createsuperuser
 ```sh
 python manage.py runserver
 ```
+
+### Json
+The request collection is as follows and can be tested in /graphql.
+
+* Register user
+```sh
+mutation{
+  registerUser(username:"pepito", email:"pepito@gmail.com", password:"p@ssw0rd"){
+    username
+  }
+}
+```
+
+* User login
+```sh
+mutation{
+  tokenAuth(username: "pepito", password:"p@ssw0rd"){
+    success
+    errors
+    token{
+      token
+    }
+  }
+}
+```
+
+* Password change
+```sh
+mutation{
+  passwordChange(oldPassword:"p@ssw0rd",
+    newPassword1:"newpassword123",
+  	newPassword2:"newpassword123"
+  ){
+    success
+    errors
+  }
+}
+```
+
+* Magic link
+* Create idea
+* Update visibility idea
+* My ideas
+* Delete idea
+* Follow request
+* My follow request
+* My followers
+* My followed
+* Unfollow
+* Delete follower
+* Search user
+* Ideas from other user
+* Timeline
+* My notifications
