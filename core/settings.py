@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from gqlauth.settings_type import GqlAuthSettings
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,18 +100,28 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'thinkup',
-        'USER': 'think_admin',
-        'PASSWORD': 'th1nk_adm1n',
-        'HOST': 'localhost',
-        'PORT': 5432,
+if 'IS_DOCKER' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'thinkup',
+            'USER': 'think_admin',
+            'PASSWORD': 'th1nk_adm1n',
+            'HOST': 'db',
+            'PORT': 5432,
+        }
     }
-}
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'thinkup',
+            'USER': 'think_admin',
+            'PASSWORD': 'th1nk_adm1n',
+            'HOST': 'localhost',
+            'PORT': 5432,
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
