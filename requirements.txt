@@ -1,5 +1,5 @@
 Django == 4.2.3
-psycopg2
+psycopg2-binary
 graphene-django
 strawberry-graphql == 0.198.0
 uvicorn
