@@ -2,6 +2,7 @@ from typing import List
 from django.contrib.auth import get_user_model
 from gqlauth.core.utils import get_user
 from strawberry.types import Info
+from users.password_validator import PasswordValidator
 from users.models import Follows, FollowRequest, CustomUser
 from gqlauth.models import UserStatus
 
@@ -35,7 +36,14 @@ def search_user(username: str, info: Info) -> List[CustomUser]:
 # Mutations
 def register_user(username: str, email: str, password: str) -> CustomUser:
     CustomUser = get_user_model()
-    user = CustomUser.objects._create_user(username = username, email = email, password = password)
+
+    password_validator = PasswordValidator(
+        passwords=["password", "password1", "password2", "p@ssw0rd", "common_password1", "common_password2"],
+    )
+
+    password_validator.validate(password)
+
+    user = CustomUser.objects._create_user(username=username, email=email, password=password)
 
     status: "UserStatus" = getattr(user, "status")
     status.verified = True
