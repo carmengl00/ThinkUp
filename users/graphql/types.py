@@ -5,7 +5,6 @@ class CustomUserType:
     id: strawberry.ID
     email: str
     username: str
-    password: str
 
 @strawberry.type
 class FollowRequestType:
