@@ -1,5 +1,8 @@
 import strawberry
+from ideas.models import VisibilityType
 from users.graphql.types import CustomUserType
+
+VisibilityEnum = strawberry.enum(VisibilityType)
 
 @strawberry.type
 class IdeaType:
@@ -7,8 +10,8 @@ class IdeaType:
     text: str
     created_at: str
     updated_at: str
-    visibility: str
-    user_id: int
+    visibility: VisibilityEnum
+    user: CustomUserType
 
 @strawberry.type
 class NotificationsType:

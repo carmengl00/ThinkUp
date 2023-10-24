@@ -1,19 +1,24 @@
 from gqlauth.core.utils import get_user
 from strawberry.types import Info
-from users.models import Follows
+from ideas.graphql.types import VisibilityEnum
+from users.models import CustomUser, Follows
 from ideas.models import Idea, Notification
 from typing import List
 from django.contrib.auth import get_user_model
 
 # Mutations
-def create_idea(text: str, visibility: str, info: Info) -> Idea:
+def create_idea(text: str, visibility: VisibilityEnum, info: Info) -> Idea:
     user = get_user(info)
-    idea = Idea.objects.create(text = text, visibility = visibility, user = user)
-    followers = Follows.objects.filter(followed = user)
-    for f in followers:
-        if idea.visibility == 'public' or idea.visibility == 'protected':
-            Notification.objects.create(idea = idea, user = f.follower)
-    return idea
+    if user and isinstance(user, CustomUser):
+        idea = Idea.objects.create(text=text, visibility=visibility, user=user)
+        followers = Follows.objects.filter(followed=user)
+        for f in followers:
+            if visibility in (VisibilityEnum.PUBLIC, VisibilityEnum.PROTECTED):
+                Notification.objects.create(idea=idea, user=f.follower)
+        return idea
+    else:
+        raise Exception("Usuario no válido")
+
 
 def update_visibility_idea(id: int, visibility: str, info: Info) -> Idea:
     user = get_user(info)
@@ -41,13 +46,13 @@ def ideas_user(username: str, info: Info) -> List[Idea]:
     protected_ideas = []
     private_ideas = []
     if follow:
-        protected_ideas = Idea.objects.filter(user = followed, visibility = 'protected')
+        protected_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PROTECTED)
     
     if followed == user:
-        private_ideas = Idea.objects.filter(user = followed, visibility = 'private')
-        protected_ideas = Idea.objects.filter(user = followed, visibility = 'protected')
+        private_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PRIVATE)
+        protected_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PROTECTED)
         
-    public_ideas = Idea.objects.filter(user = followed, visibility = 'public')
+    public_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PUBLIC)
     lista = list(public_ideas) + list(protected_ideas) + list(private_ideas)
     return lista
 

@@ -13,7 +13,7 @@ class Idea(models.Model):
     text = models.CharField(max_length=2000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    visibility = models.CharField(max_length=10, choices=VisibilityType.choices, default=VisibilityType.PUBLIC)
+    visibility = models.CharField(max_length=20, choices=VisibilityType.choices, default=VisibilityType.PUBLIC)
 
     def __str__(self):
         return self.text
