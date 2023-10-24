@@ -20,7 +20,7 @@ def create_idea(text: str, visibility: VisibilityEnum, info: Info) -> Idea:
         raise Exception("Usuario no válido")
 
 
-def update_visibility_idea(id: int, visibility: str, info: Info) -> Idea:
+def update_visibility_idea(id: int, visibility: VisibilityEnum, info: Info) -> Idea:
     user = get_user(info)
     idea = Idea.objects.get(id = id, user = user)
     idea.visibility = visibility
