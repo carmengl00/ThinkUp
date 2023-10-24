@@ -1,18 +1,20 @@
 import strawberry
+import uuid
 
 @strawberry.type
 class CustomUserType:
-    id: strawberry.ID
+    uuid: uuid.UUID
     email: str
     username: str
 
 @strawberry.type
 class FollowRequestType:
-    id: strawberry.ID
+    uuid: uuid.UUID
     requester: CustomUserType
     required: CustomUserType
 
 @strawberry.type
 class FollowsType:
+    uuid: uuid.UUID
     follower: CustomUserType
     followed: CustomUserType
