@@ -36,7 +36,7 @@ def delete_idea(id: int, info: Info) -> bool:
 # Queries
 def my_ideas(info: Info) -> List[Idea]:
     user = get_user(info)
-    sorted_list = sorted(Idea.objects.filter(user = user), key = lambda x: x.created_at, reverse = True)
+    sorted_list = Idea.objects.filter(user=user).order_by('-created_at')
     return sorted_list
 
 def ideas_user(username: str, info: Info) -> List[Idea]:
@@ -62,9 +62,9 @@ def timeline(self, info: Info) -> List[Idea]:
     my_ideas = Idea.objects.filter(user = user)
     lista = list(my_ideas)
     for f in following:
-        lista += self.ideas_user(f.followed.username, info)
+        lista += ideas_user(f.followed.username, info)
 
-    sorted_list = sorted(lista, key = lambda x: x.created_at, reverse = True)
+    sorted_list = Idea.objects.filter(id__in=[idea.id for idea in lista]).order_by('-created_at')
     return sorted_list
 
 def my_notifications(info: Info) -> List[Notification]:
