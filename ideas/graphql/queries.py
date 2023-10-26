@@ -5,7 +5,7 @@ from gqlauth.user.queries import UserQueries
 from ideas.graphql.types import IdeaType, NotificationsType
 from ideas.models import Notification, Idea
 from ideas.utils import ideas_user_aux
-from users.models import Follows
+from users.models import CustomUser, Follows
 from strawberry.types import Info
 from gqlauth.core.utils import get_user
 
@@ -19,8 +19,10 @@ class IdeasQuery(UserQueries):
 
 
     @strawberry.field
-    def ideas_user(username: str, info: Info) -> List[IdeaType]:
-        return ideas_user_aux(username, info)
+    def ideas_user(uuid: str, info: Info) -> List[IdeaType]:
+        user_authenticated = get_user(info)
+        target_user = CustomUser.objects.get(uuid = uuid)
+        return ideas_user_aux(user_authenticated, target_user)
 
 
     @strawberry.field
@@ -30,7 +32,7 @@ class IdeasQuery(UserQueries):
         my_ideas = Idea.objects.filter(user = user)
         lista = list(my_ideas)
         for f in following:
-            lista += ideas_user_aux(f.followed.username, info)
+            lista += ideas_user_aux(user, f.followed)
 
         sorted_list = Idea.objects.filter(id__in=[idea.id for idea in lista]).order_by('-created_at')
         return sorted_list

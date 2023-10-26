@@ -3,22 +3,13 @@ from ideas.graphql.types import IdeaType
 from ideas.models import Idea
 from users.models import CustomUser, Follows
 from ideas.graphql.types import VisibilityEnum
-from strawberry.types import Info
-from gqlauth.core.utils import get_user
 
-def ideas_user_aux(username: str, info: Info) -> List[IdeaType]:
-    user = get_user(info)
-    followed = CustomUser.objects.get(username = username)
-    follow = Follows.objects.filter(follower = user, followed = followed)
-    protected_ideas = []
-    private_ideas = []
-    if follow:
-        protected_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PROTECTED)
-    
-    if followed == user:
-        private_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PRIVATE)
-        protected_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PROTECTED)
-        
-    public_ideas = Idea.objects.filter(user = followed, visibility = VisibilityEnum.PUBLIC)
-    lista = list(public_ideas) + list(protected_ideas) + list(private_ideas)
-    return lista
+def ideas_user_aux(user_authenticated: CustomUser, target_user: CustomUser) -> List[IdeaType]:
+    lista = []
+    if user_authenticated == target_user:
+        lista = Idea.objects.filter(user = target_user)
+    elif Follows.objects.filter(follower = user_authenticated, followed = target_user):
+        lista = Idea.objects.filter(user = target_user, visibility__in = [VisibilityEnum.PUBLIC, VisibilityEnum.PROTECTED])
+    else:
+        lista = Idea.objects.filter(user = target_user, visibility = VisibilityEnum.PUBLIC)
+    return lista.order_by('-created_at')
