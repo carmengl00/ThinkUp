@@ -8,7 +8,7 @@ def ideas_user_aux(user_authenticated: CustomUser, target_user: CustomUser) -> L
     lista = []
     if user_authenticated == target_user:
         lista = Idea.objects.filter(user = target_user)
-    elif Follows.objects.filter(follower = user_authenticated, followed = target_user):
+    elif Follows.objects.filter(follower = user_authenticated, followed = target_user).exists():
         lista = Idea.objects.filter(user = target_user, visibility__in = [VisibilityEnum.PUBLIC, VisibilityEnum.PROTECTED])
     else:
         lista = Idea.objects.filter(user = target_user, visibility = VisibilityEnum.PUBLIC)

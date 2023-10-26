@@ -8,6 +8,7 @@ from ideas.utils import ideas_user_aux
 from users.models import CustomUser, Follows
 from strawberry.types import Info
 from gqlauth.core.utils import get_user
+from uuid import UUID
 
 @strawberry.type
 class IdeasQuery(UserQueries):
@@ -19,7 +20,7 @@ class IdeasQuery(UserQueries):
 
 
     @strawberry.field
-    def ideas_user(uuid: str, info: Info) -> List[IdeaType]:
+    def ideas_user(uuid: UUID, info: Info) -> List[IdeaType]:
         user_authenticated = get_user(info)
         target_user = CustomUser.objects.get(uuid = uuid)
         return ideas_user_aux(user_authenticated, target_user)
