@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
+import uuid
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -24,6 +24,7 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(username, email, password, **extra_fields)
     
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)
     email = models.EmailField(blank = False, max_length=254, verbose_name='email address', unique=True)
     username = models.CharField(max_length=50, unique=True)
     last_name = models.CharField(max_length=50, blank=True)
@@ -54,12 +55,14 @@ class FollowRequestManager(models.Manager):
         return request
 
 class FollowRequest(models.Model):
+    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)
     requester = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_sent')
     required = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_received')
 
     objects = FollowRequestManager()
 
 class Follows(models.Model):
+    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)
     follower = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follower')
     followed = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='followed')
 
