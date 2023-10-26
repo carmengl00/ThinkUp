@@ -3,7 +3,6 @@ from gqlauth.user import arg_mutations as mutations
 from users.graphql.types import CustomUserType, FollowRequestType, FollowsType
 from users.models import FollowRequest, Follows, CustomUser
 from strawberry.types import Info
-from django.contrib.auth import get_user_model
 from gqlauth.core.utils import get_user
 from users.password_validator import PasswordValidator
 from gqlauth.models import UserStatus
@@ -19,7 +18,6 @@ class UserMutation:
 
     @strawberry.field
     def register_user(username: str, email: str, password: str) -> CustomUserType:
-        CustomUser = get_user_model()
 
         password_validator = PasswordValidator(
             passwords=["password", "password1", "password2", "p@ssw0rd", "common_password1", "common_password2"],
@@ -39,7 +37,7 @@ class UserMutation:
     @strawberry.field
     def follow_request(required_username: str, info: Info) -> FollowRequestType:
         requester = get_user(info)
-        required = get_user_model().objects.get(username = required_username)
+        required = CustomUser.objects.get(username = required_username)
         return FollowRequest.objects.create_request(requester = requester, required = required)
 
 
@@ -62,7 +60,7 @@ class UserMutation:
     @strawberry.field
     def unfollow(username: str, info: Info) -> bool:
         user = get_user(info)
-        followed = get_user_model().objects.get(username = username)
+        followed = CustomUser.objects.get(username = username)
         follow = Follows.objects.filter(follower = user, followed = followed)
         if follow.exists():
             follow.delete()
@@ -74,7 +72,7 @@ class UserMutation:
     @strawberry.field
     def delete_follower(username: str, info: Info) -> bool:
         user = get_user(info)
-        follower = get_user_model().objects.get(username = username)
+        follower = CustomUser.objects.get(username = username)
         follow = Follows.objects.filter(follower = follower, followed = user)
         if follow.exists():
             follow.delete()

@@ -3,16 +3,15 @@ import strawberry
 from typing import List
 from gqlauth.user.queries import UserQueries
 from users.graphql.types import CustomUserType, FollowRequestType
-from users.models import FollowRequest, Follows
+from users.models import CustomUser, FollowRequest, Follows
 from strawberry.types import Info
-from django.contrib.auth import get_user_model
 from gqlauth.core.utils import get_user
 
 @strawberry.type
 class UsersQuery(UserQueries):
     @strawberry.field
     def users(self) -> List[CustomUserType]:
-        return get_user_model().objects.all()
+        return CustomUser.objects.all()
 
 
     @strawberry.field
@@ -43,4 +42,4 @@ class UsersQuery(UserQueries):
     @strawberry.field
     def search_user(username: str, info: Info) -> List[CustomUserType]:
         user = get_user(info)
-        return get_user_model().objects.filter(username__icontains = username).exclude(username = user.username)
+        return CustomUser.objects.filter(username__icontains = username).exclude(username = user.username)

@@ -6,9 +6,7 @@ from ideas.graphql.types import IdeaType, NotificationsType
 from ideas.models import Notification, Idea
 from ideas.utils import ideas_user_aux
 from users.models import Follows
-from ideas.graphql.types import VisibilityEnum
 from strawberry.types import Info
-from django.contrib.auth import get_user_model
 from gqlauth.core.utils import get_user
 
 @strawberry.type
