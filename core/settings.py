@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Third party apps
     "ideas",
     "users",
+    "base",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
