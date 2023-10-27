@@ -4,7 +4,7 @@ from typing import List
 from gqlauth.user.queries import UserQueries
 from base.graphql.inputs import PaginationInput
 from base.graphql.utils import get_paginator
-from ideas.graphql.types import IdeaType, NotificationsType, PaginatedIdeaType
+from ideas.graphql.types import IdeaType, NotificationsType, PaginatedIdeaType, PaginatedNotificationType
 from ideas.models import Notification, Idea
 from ideas.utils import ideas_user_aux
 from users.models import CustomUser, Follows
@@ -59,6 +59,12 @@ class IdeasQuery(UserQueries):
 
 
     @strawberry.field
-    def my_notifications(info: Info) -> List[NotificationsType]:
+    def my_notifications(info: Info, pagination: PaginationInput) -> PaginatedNotificationType:
         user = get_user(info)
-        return Notification.objects.filter(user = user)
+        lista = Notification.objects.filter(user = user)
+
+        results = get_paginator(
+            lista, pagination.page_size, pagination.page, PaginatedNotificationType
+        )
+
+        return results

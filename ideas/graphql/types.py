@@ -24,3 +24,7 @@ class NotificationsType:
 @strawberry.type
 class PaginatedIdeaType(PaginatedQueryType):
     edges: list[IdeaType]
+
+@strawberry.type
+class PaginatedNotificationType(PaginatedQueryType):
+    edges: list[NotificationsType]
