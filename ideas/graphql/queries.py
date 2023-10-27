@@ -41,7 +41,7 @@ class IdeasQuery(UserQueries):
 
 
     @strawberry.field
-    def timeline(self, info: Info) -> List[IdeaType]:
+    def timeline(self, info: Info, pagination: PaginationInput) -> PaginatedIdeaType:
         user = get_user(info)
         following = Follows.objects.filter(follower = user)
         my_ideas = Idea.objects.filter(user = user)
@@ -50,7 +50,12 @@ class IdeasQuery(UserQueries):
             lista += ideas_user_aux(user, f.followed)
 
         sorted_list = Idea.objects.filter(id__in=[idea.id for idea in lista]).order_by('-created_at')
-        return sorted_list
+
+        results = get_paginator(
+            sorted_list, pagination.page_size, pagination.page, PaginatedIdeaType
+        )
+
+        return results
 
 
     @strawberry.field
