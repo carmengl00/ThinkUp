@@ -27,10 +27,17 @@ class IdeasQuery(UserQueries):
 
 
     @strawberry.field
-    def ideas_user(uuid: UUID, info: Info) -> PaginatedIdeaType:
+    def ideas_user(uuid: UUID, info: Info, pagination: PaginationInput) -> PaginatedIdeaType:
         user_authenticated = get_user(info)
         target_user = CustomUser.objects.get(uuid = uuid)
-        return ideas_user_aux(user_authenticated, target_user)
+
+        lista = ideas_user_aux(user_authenticated, target_user)
+
+        results = get_paginator(
+            lista, pagination.page_size, pagination.page, PaginatedIdeaType
+        )
+
+        return results
 
 
     @strawberry.field
