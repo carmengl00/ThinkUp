@@ -19,11 +19,9 @@ class IdeasQuery(UserQueries):
         user = get_user(info)
         sorted_list = Idea.objects.filter(user=user).order_by('-created_at')
 
-        results = get_paginator(
+        return get_paginator(
             sorted_list, pagination.page_size, pagination.page, PaginatedIdeaType
         )
-
-        return results
 
 
     @strawberry.field
@@ -33,11 +31,9 @@ class IdeasQuery(UserQueries):
 
         lista = ideas_user_aux(user_authenticated, target_user)
 
-        results = get_paginator(
+        return get_paginator(
             lista, pagination.page_size, pagination.page, PaginatedIdeaType
         )
-
-        return results
 
 
     @strawberry.field
@@ -51,11 +47,9 @@ class IdeasQuery(UserQueries):
 
         sorted_list = Idea.objects.filter(id__in=[idea.id for idea in lista]).order_by('-created_at')
 
-        results = get_paginator(
+        return get_paginator(
             sorted_list, pagination.page_size, pagination.page, PaginatedIdeaType
         )
-
-        return results
 
 
     @strawberry.field
@@ -63,8 +57,6 @@ class IdeasQuery(UserQueries):
         user = get_user(info)
         lista = Notification.objects.filter(user = user)
 
-        results = get_paginator(
+        return get_paginator(
             lista, pagination.page_size, pagination.page, PaginatedNotificationType
         )
-
-        return results

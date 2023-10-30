@@ -45,9 +45,7 @@ class UsersQuery(UserQueries):
     def search_user(username: str, info: Info, pagination: PaginationInput) -> PaginatedCustomUserType:
         user = get_user(info)
         user_list = CustomUser.objects.filter(username__icontains = username).exclude(username = user.username)
-
-        results = get_paginator(
+        
+        return get_paginator(
             user_list, pagination.page_size, pagination.page, PaginatedCustomUserType
         )
-
-        return results
