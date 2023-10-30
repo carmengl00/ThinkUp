@@ -12,4 +12,5 @@ def ideas_user_aux(user_authenticated: CustomUser, target_user: CustomUser) -> L
         lista = Idea.objects.filter(user = target_user, visibility__in = [VisibilityEnum.PUBLIC, VisibilityEnum.PROTECTED])
     else:
         lista = Idea.objects.filter(user = target_user, visibility = VisibilityEnum.PUBLIC)
+
     return lista.order_by('-created_at')

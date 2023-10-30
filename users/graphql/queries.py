@@ -2,7 +2,9 @@ import strawberry
 
 from typing import List
 from gqlauth.user.queries import UserQueries
-from users.graphql.types import CustomUserType, FollowRequestType
+from base.graphql.inputs import PaginationInput
+from base.graphql.utils import get_paginator
+from users.graphql.types import CustomUserType, FollowRequestType, PaginatedCustomUserType
 from users.models import CustomUser, FollowRequest, Follows
 from strawberry.types import Info
 from gqlauth.core.utils import get_user
@@ -40,6 +42,10 @@ class UsersQuery(UserQueries):
 
 
     @strawberry.field
-    def search_user(username: str, info: Info) -> List[CustomUserType]:
+    def search_user(username: str, info: Info, pagination: PaginationInput) -> PaginatedCustomUserType:
         user = get_user(info)
-        return CustomUser.objects.filter(username__icontains = username).exclude(username = user.username)
+        user_list = CustomUser.objects.filter(username__icontains = username).exclude(username = user.username)
+        
+        return get_paginator(
+            user_list, pagination.page_size, pagination.page, PaginatedCustomUserType
+        )
