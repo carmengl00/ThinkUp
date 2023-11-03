@@ -4,3 +4,5 @@ graphene-django
 strawberry-graphql == 0.198.0
 uvicorn
 strawberry-django-auth
+pytest-django
+mixer==7.2.1
