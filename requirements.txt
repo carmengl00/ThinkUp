@@ -1,6 +1,9 @@
-Django == 4.2.3
+Django == 4.0.10
 psycopg2-binary
 graphene-django
-strawberry-graphql == 0.198.0
+strawberry-graphql == 0.187.5
 uvicorn
-strawberry-django-auth
+pytest-django
+mixer==7.2.1
+pytimeparse
+djangorestframework

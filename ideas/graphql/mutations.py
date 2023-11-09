@@ -1,7 +1,8 @@
+from uuid import UUID
 import strawberry
 
-from gqlauth.core.utils import get_user
 from strawberry.types import Info
+from base.decorators import login_required
 from ideas.graphql.types import IdeaType
 from ideas.models import Notification, Idea
 from users.models import CustomUser, Follows
@@ -11,8 +12,10 @@ from ideas.graphql.types import VisibilityEnum
 @strawberry.type
 class IdeasMutation:
     @strawberry.field
-    def create_idea(text: str, visibility: VisibilityEnum, info: Info) -> IdeaType:
-        user = get_user(info)
+    @login_required
+    def create_idea(self, text: str, visibility: VisibilityEnum, info: Info) -> IdeaType:
+        user = info.context.request.user
+        print(user)
         if user and isinstance(user, CustomUser):
             idea = Idea.objects.create(text=text, visibility=visibility, user=user)
             followers = Follows.objects.filter(followed=user)
@@ -25,8 +28,9 @@ class IdeasMutation:
 
 
     @strawberry.field
-    def update_visibility_idea(id: int, visibility: VisibilityEnum, info: Info) -> IdeaType:
-        user = get_user(info)
+    @login_required
+    def update_visibility_idea(self, id: UUID, visibility: VisibilityEnum, info: Info) -> IdeaType:
+        user = info.context.request.user
         idea = Idea.objects.get(id = id, user = user)
         idea.visibility = visibility
         idea.save()
@@ -34,8 +38,9 @@ class IdeasMutation:
 
 
     @strawberry.field
-    def delete_idea(id: int, info: Info) -> bool:
-        user = get_user(info)
+    @login_required
+    def delete_idea(self, id: UUID, info: Info) -> bool:
+        user = info.context.request.user
         idea = Idea.objects.get(id = id, user = user)
         idea.delete()
         return True
