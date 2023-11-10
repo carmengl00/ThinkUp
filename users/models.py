@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
+from django.utils.crypto import get_random_string
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -12,19 +13,22 @@ class CustomUserManager(BaseUserManager):
         user.save()
         return user
     
-    def create_superuser(self, username, email, password, **extra_fields):
+    def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
-
+        username = email.split('@')[0]
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff = True')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser = True')
         return self._create_user(username, email, password, **extra_fields)
     
+def generate_jwt_token() -> str:
+    return get_random_string(12)
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     email = models.EmailField(blank = False, max_length=254, verbose_name='email address', unique=True)
     username = models.CharField(max_length=50, unique=True)
     last_name = models.CharField(max_length=50, blank=True)
@@ -32,15 +36,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default = timezone.now, editable=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    jwt_token_key = models.CharField(max_length=12, default=generate_jwt_token)
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['email']
-
-    def __str__(self):
-        return self.username
 
 class FollowRequestManager(models.Manager):
     def create_request(self, requester, required):
@@ -55,14 +56,14 @@ class FollowRequestManager(models.Manager):
         return request
 
 class FollowRequest(models.Model):
-    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     requester = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_sent')
     required = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follow_requests_received')
 
     objects = FollowRequestManager()
 
 class Follows(models.Model):
-    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     follower = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follower')
     followed = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='followed')
 

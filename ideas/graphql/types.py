@@ -8,7 +8,7 @@ VisibilityEnum = strawberry.enum(VisibilityType)
 
 @strawberry.type
 class IdeaType:
-    uuid: uuid.UUID
+    id: uuid.UUID
     text: str
     created_at: str
     updated_at: str
@@ -17,7 +17,7 @@ class IdeaType:
 
 @strawberry.type
 class NotificationsType:
-    uuid: uuid.UUID
+    id: uuid.UUID
     idea: IdeaType
     user: CustomUserType
 
