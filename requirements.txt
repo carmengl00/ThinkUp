@@ -1,7 +1,7 @@
-Django == 4.0.10
+Django == 4.2.3
 psycopg2-binary
 graphene-django
-strawberry-graphql == 0.187.5
+strawberry-graphql == 0.198.0
 uvicorn
 pytest-django
 mixer==7.2.1
