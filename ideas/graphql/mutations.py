@@ -15,7 +15,6 @@ class IdeasMutation:
     @login_required
     def create_idea(self, text: str, visibility: VisibilityEnum, info: Info) -> IdeaType:
         user = info.context.request.user
-        print(user)
         if user and isinstance(user, CustomUser):
             idea = Idea.objects.create(text=text, visibility=visibility, user=user)
             followers = Follows.objects.filter(followed=user)

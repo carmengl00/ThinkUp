@@ -49,15 +49,8 @@ class UserMutation:
     @strawberry.mutation
     @login_required
     def change_password(self, info: Info, input: ChangePasswordInput) -> CustomUserType:
-        print(getattr(info.context.request, "user", None))
-
         user = info.context.request.user
-        print(info.context)
-        print(user)
-        if not user:
-            raise Exception(
-                "You must be logged in to change your password.",
-            )
+        
         if not user.check_password(input.current_password):
             raise Exception(
                 "The current password is incorrect.",
