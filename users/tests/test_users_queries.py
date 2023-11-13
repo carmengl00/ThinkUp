@@ -72,46 +72,76 @@ SEARCH_USER_QUERY = """
 @pytest.mark.django_db
 class TestUsersQueries(TestBase):
     def test_users_query(self):
-        mixer.cycle(5).blend(CustomUser)
+        mixer.blend(CustomUser, username = "user1")
+        mixer.blend(CustomUser, username = "user2")
+        mixer.blend(CustomUser, username = "user3")
 
         response = self.post(query=USERS_ITEMS, user=self.user)
 
         data = json.loads(response.content.decode())
-        assert len(data.get("data").get("users")) == 6
+        users = data.get("data").get("users")
+        assert len(users) == 4
+
+        assert users[0].get("username") == "user3"
+        assert users[1].get("username") == "user2"
+        assert users[2].get("username") == "user1"
+
 
     def test_my_follow_request_query(self):
-        requester = mixer.blend(CustomUser)
+        requester1 = mixer.blend(CustomUser, username = "requester1")
         required = self.user
-        mixer.blend(FollowRequest, requester=requester)
-        mixer.blend(FollowRequest, required=required)
+        mixer.blend(FollowRequest, requester=requester1, required=required)
+
+        requester2 = mixer.blend(CustomUser, username = "requester2")
+        mixer.blend(FollowRequest, requester=requester2, required=required)
 
         response = self.post(query=MY_FOLLOW_REQUEST_QUERY, user=self.user)
 
         data = json.loads(response.content.decode())
-        assert len(data.get("data").get("myFollowRequest")) == 1
+        myFollowRequest = data.get("data").get("myFollowRequest")
+        assert len(myFollowRequest) == 2
+
+        assert myFollowRequest[0].get("requester").get("username") == requester1.username
+        assert myFollowRequest[1].get("requester").get("username") == requester2.username
 
     def test_my_followers_query(self):
-        follower = mixer.blend(CustomUser)
-        mixer.cycle(5).blend(Follows, followed=self.user, follower=follower)
+        follower1 = mixer.blend(CustomUser, username = "follower1")
+        mixer.blend(Follows, followed=self.user, follower=follower1)
+
+        follower2 = mixer.blend(CustomUser, username = "follower2")
+        mixer.blend(Follows, followed=self.user, follower=follower2)
 
         response = self.post(query=MY_FOLLOWERS_QUERY, user=self.user)
 
         data = json.loads(response.content.decode())
-        assert len(data.get("data").get("myFollowers")) == 5
+        myFollowers = data.get("data").get("myFollowers")
+        assert len(myFollowers) == 2
+
+        assert myFollowers[0].get("username") == follower1.username
+        assert myFollowers[1].get("username") == follower2.username
+
 
     def test_my_followed_query(self):
-        followed = mixer.blend(CustomUser)
-        mixer.cycle(5).blend(Follows, follower=self.user, followed=followed)
+        followed1 = mixer.blend(CustomUser, username = "followed1")
+        mixer.blend(Follows, follower=self.user, followed=followed1)
+
+        followed2 = mixer.blend(CustomUser, username = "followed2")
+        mixer.blend(Follows, follower=self.user, followed=followed2)
 
         response = self.post(query=MY_FOLLOWED_QUERY, user=self.user)
 
         data = json.loads(response.content.decode())
-        assert len(data.get("data").get("myFollowed")) == 5
+        myFollowed = data.get("data").get("myFollowed")
+        assert len(myFollowed) == 2
+
+        assert myFollowed[0].get("username") == followed1.username
+        assert myFollowed[1].get("username") == followed2.username
+
 
     def test_search_user_query(self):
 
-        mixer.blend(CustomUser, username = "test_user")
-        mixer.blend(CustomUser, username = "user_test")
+        test_user_1 = mixer.blend(CustomUser, username = "test_user")
+        test_user_2 = mixer.blend(CustomUser, username = "user_test")
         mixer.blend(CustomUser, username = "other_user")
         mixer.blend(CustomUser, username = "other_user_2")
         mixer.blend(CustomUser, username = "user")
@@ -131,10 +161,7 @@ class TestUsersQueries(TestBase):
         )
 
         data = json.loads(response.content.decode())
-        print("DATA", data)
         edges = data.get("data").get("searchUser").get("edges")
         assert len(edges) == 2
-
-        usernames = [edge.get("username") for edge in edges]
-        assert "test_user" in usernames
-        assert "user_test" in usernames
+        assert edges[0].get("username") == test_user_2.username
+        assert edges[1].get("username") == test_user_1.username
