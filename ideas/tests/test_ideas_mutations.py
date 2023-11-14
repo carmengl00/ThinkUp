@@ -78,7 +78,6 @@ class TestIdeasMutations(TestBase):
         request.user = self.user
         response = GraphQLView.as_view(schema=schema)(request)
         data = json.loads(response.content.decode())
-        print(data)
         idea = data.get("data")
         assert idea == None
 
