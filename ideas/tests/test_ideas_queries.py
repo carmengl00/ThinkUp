@@ -3,7 +3,6 @@ import json
 import pytest
 from mixer.backend.django import mixer
 from base.factory_test_case import TestBase
-from unittest.mock import patch
 from ideas.models import Idea, Notification, VisibilityType
 from users.models import CustomUser, Follows
 
@@ -194,7 +193,6 @@ class TestIdeasQueries(TestBase):
         )
 
         data = json.loads(response.content.decode())
-        print(data)
         ideas = data.get("data").get("myNotifications").get("edges")
         assert len(ideas) == 2
 
