@@ -4,3 +4,6 @@
 .venv
 venv/
 /venv/
+
+#data
+data/

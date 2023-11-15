@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: thinkup
+      POSTGRES_USER: think_admin
+      POSTGRES_PASSWORD: th1nk_adm1n
+  web:
+    build: .
+    environment:
+      IS_DOCKER: 1
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
