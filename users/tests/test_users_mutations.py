@@ -336,7 +336,6 @@ class TestUserSchema(TestCase):
         request.user = requester
         response = GraphQLView.as_view(schema=schema)(request)
         data = json.loads(response.content.decode())
-        print(data)
         assert data.get("errors")[0].get("message") == "FollowRequest matching query does not exist."
         approve_follow_request = data.get("data")
         assert approve_follow_request == None

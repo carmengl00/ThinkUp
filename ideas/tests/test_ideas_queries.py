@@ -115,6 +115,26 @@ class TestIdeasQueries(TestBase):
         assert ideas[1].get("text") == "idea 2"
         assert ideas[2].get("text") == "idea 1"
 
+    def test_my_ideas_unauthenticated(self):
+        mixer.blend(Idea, user=self.user, text="idea 1")
+        mixer.blend(Idea, user=self.user, text="idea 2")
+        mixer.blend(Idea, user=self.user, text="idea 3")
+
+        variables = {
+            "pagination": {
+                "page": 1,
+                "pageSize": 5,
+            },
+        }
+
+        response = self.post(
+            query=IDEAS_ITEMS,
+            variables= variables
+        )
+
+        data = json.loads(response.content.decode())
+        assert data.get("data") == None
+
     def test_ideas_user(self):
         user2 = mixer.blend(CustomUser, username = "user2")
         mixer.blend(Idea, user=user2, text="idea 1")
@@ -142,6 +162,29 @@ class TestIdeasQueries(TestBase):
         assert ideas[0].get("text") == "idea 3"
         assert ideas[1].get("text") == "idea 2"
         assert ideas[2].get("text") == "idea 1"
+
+    def test_ideas_without_id(self):
+        user2 = mixer.blend(CustomUser, username = "user2")
+        mixer.blend(Idea, user=user2, text="idea 1")
+        mixer.blend(Idea, user=user2, text="idea 2")
+        mixer.blend(Idea, user=user2, text="idea 3")
+
+        variables = {
+            "pagination": {
+                "page": 1,
+                "pageSize": 5,
+            },
+        }
+
+        response = self.post(
+            query=IDEAS_USER,
+            user=self.user,
+            variables= variables
+        )
+
+        data = json.loads(response.content.decode())
+        assert data.get("data") == None
+        assert data.get("errors")[0].get("message") == "Variable '$id' of required type 'UUID!' was not provided."
 
     def test_timeline(self):
         user2 = mixer.blend(CustomUser, username = "user2")
@@ -175,6 +218,31 @@ class TestIdeasQueries(TestBase):
         assert ideas[2].get("text") == "idea 2"
         assert ideas[3].get("text") == "idea 1"
 
+    def test_timeline_unauthenticated(self):
+        user2 = mixer.blend(CustomUser, username = "user2")
+        mixer.blend(Idea, user=user2, text="idea 1", visibility = VisibilityType.PUBLIC)
+        mixer.blend(Idea, user=user2, text="idea 2", visibility = VisibilityType.PROTECTED)
+        mixer.blend(Idea, user=user2, text="idea 3", visibility = VisibilityType.PRIVATE)
+        mixer.blend(Idea, user=self.user, text="idea 4")
+        mixer.blend(Idea, user=self.user, text="idea 5")
+
+        mixer.blend(Follows, follower=self.user, followed=user2)
+
+        variables = {
+            "pagination": {
+                "page": 1,
+                "pageSize": 5,
+            },
+        }
+
+        response = self.post(
+            query=TIMELINE,
+            variables= variables
+        )
+
+        data = json.loads(response.content.decode())
+        assert data.get("data") == None
+
     def test_my_notifications(self):
         mixer.blend(Notification, user=self.user, idea=mixer.blend(Idea, user=self.user, text="idea 1"))
         mixer.blend(Notification, user=self.user, idea=mixer.blend(Idea, user=self.user, text="idea 2"))
@@ -198,3 +266,23 @@ class TestIdeasQueries(TestBase):
 
         assert ideas[0].get("idea").get("text") == "idea 1"
         assert ideas[1].get("idea").get("text") == "idea 2"
+
+    def test_my_notifications_unauthenticated(self):
+        mixer.blend(Notification, user=self.user, idea=mixer.blend(Idea, user=self.user, text="idea 1"))
+        mixer.blend(Notification, user=self.user, idea=mixer.blend(Idea, user=self.user, text="idea 2"))
+
+        variables = {
+            "pagination": {
+                "page": 1,
+                "pageSize": 5,
+            },
+        }
+
+        response = self.post(
+            query=NOTIFICATIONS,
+            variables= variables
+        )
+
+        data = json.loads(response.content.decode())
+        assert data.get("data") == None
+        
