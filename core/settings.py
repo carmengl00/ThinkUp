@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
-from gqlauth.settings_type import GqlAuthSettings
+from datetime import timedelta
 import os
+from pytimeparse import parse
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,10 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "strawberry.django",
-    "gqlauth",
+    "rest_framework",
     # Third party apps
     "ideas",
     "users",
+    "base",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -62,20 +64,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'gqlauth.core.middlewares.django_jwt_middleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
-GQL_AUTH = GqlAuthSettings(
-    LOGIN_REQUIRE_CAPTCHA = False,
-    REGISTER_REQUIRE_CAPTCHA = False,
-    ALLOW_LOGIN_NOT_VERIFIED=True,
-)
 
 ROOT_URLCONF = "core.urls"
 
@@ -141,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -163,3 +156,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+JWT_EXPIRE = bool(os.environ.get("JWT_EXPIRE") or 1)
+JWT_TTL_ACCESS = os.environ.get("JWT_TTL_ACCESS") or "1 day"
+JWT_TTL_ACCESS_TIMEDELTA = timedelta(seconds=parse(JWT_TTL_ACCESS))
+JWT_TTL_REFRESH = os.environ.get("JWT_TTL_REFRESH") or "30 days"
+JWT_TTL_REFRESH_TIMEDELTA = timedelta(seconds=parse(JWT_TTL_REFRESH))
