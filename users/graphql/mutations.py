@@ -1,3 +1,4 @@
+from uuid import UUID
 from django.forms import ValidationError
 import strawberry
 from base.jwt import create_access_token, create_refresh_token
@@ -84,7 +85,7 @@ class UserMutation:
 
     @strawberry.field
     @login_required
-    def approve_follow_request(self, id: int, info: Info) -> FollowsType:
+    def approve_follow_request(self, id: UUID, info: Info) -> FollowsType:
         user = info.context.request.user
         request = FollowRequest.objects.get(id = id, required = user)
         request.delete()
@@ -93,7 +94,7 @@ class UserMutation:
 
     @strawberry.field
     @login_required
-    def reject_follow_request(self, id: int, info: Info) -> bool:
+    def reject_follow_request(self, id: UUID, info: Info) -> bool:
         user = info.context.request.user
         request = FollowRequest.objects.get(id = id, required = user)
         request.delete()

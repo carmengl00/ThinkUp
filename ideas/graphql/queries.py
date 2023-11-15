@@ -58,7 +58,7 @@ class IdeasQuery:
     @login_required
     def my_notifications(self, info: Info, pagination: PaginationInput) -> PaginatedNotificationType:
         user = info.context.request.user
-        lista = Notification.objects.filter(user = user)
+        lista = Notification.objects.filter(user = user).order_by('user__username')
 
         return get_paginator(
             lista, pagination.page_size, pagination.page, PaginatedNotificationType
