@@ -72,3 +72,6 @@ class IdeasQuery:
     def mensaje_commit(self):
         return "mensaje_commit"
     
+    @strawberry.field
+    def commit_a_modificar(self):
+        return "commit_a_modificar"
