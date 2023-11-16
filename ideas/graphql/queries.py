@@ -63,3 +63,8 @@ class IdeasQuery:
         return get_paginator(
             lista, pagination.page_size, pagination.page, PaginatedNotificationType
         )
+
+    @strawberry.field
+    def stash2(self):
+        return "stash2"
+    
