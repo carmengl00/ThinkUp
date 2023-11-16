@@ -68,3 +68,7 @@ class IdeasQuery:
     def stash3(self):
         return "stash3"
     
+    @strawberry.field
+    def mensaje_commit(self):
+        return "mensaje_commit"
+    
