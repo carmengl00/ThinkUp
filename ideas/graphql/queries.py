@@ -75,3 +75,11 @@ class IdeasQuery:
     @strawberry.field
     def commit_a_modificar(self):
         return "commit_a_modificar"
+    
+    @strawberry.field
+    def commit_sin_modificar(self):
+        return "commit_sin_modificar"
+    
+    @strawberry.field
+    def commit_sin_modificar2(self):
+        return "commit_sin_modificar"
